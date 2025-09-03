@@ -8,15 +8,12 @@ const app = express();
 const PORT = 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'my-secret-key-for-this-project';
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// In-memory storage
 const users = [];
 let userIdCounter = 1;
 
-// Auth middleware
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -34,12 +31,10 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// Register endpoint
 app.post('/api/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Validation
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'All fields are required' });
     }
@@ -48,7 +43,6 @@ app.post('/api/register', async (req, res) => {
       return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
 
-    // Check if user already exists
     const existingUser = users.find(user => 
       user.username === username || user.email === email
     );
@@ -57,10 +51,8 @@ app.post('/api/register', async (req, res) => {
       return res.status(400).json({ message: 'Username or email already exists' });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
     const newUser = {
       id: userIdCounter++,
       username,
@@ -70,7 +62,6 @@ app.post('/api/register', async (req, res) => {
 
     users.push(newUser);
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: newUser.id, username: newUser.username, email: newUser.email },
       JWT_SECRET,
@@ -93,17 +84,15 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// Login endpoint
+
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Validation
     if (!username || !password) {
       return res.status(400).json({ message: 'Username and password are required' });
     }
 
-    // Find user (allow login with username or email)
     const user = users.find(u => 
       u.username === username || u.email === username
     );
@@ -112,14 +101,12 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Check password
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: user.id, username: user.username, email: user.email },
       JWT_SECRET,
@@ -142,14 +129,12 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// Logout endpoint
 app.post('/api/logout', authenticateToken, (req, res) => {
-  // In basic implementation, logout is handled client-side by removing the token
-  // Here we just confirm the logout action
+
   res.json({ message: 'Logout successful' });
 });
 
-// Start server
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
