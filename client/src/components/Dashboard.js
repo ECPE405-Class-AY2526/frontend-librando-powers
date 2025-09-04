@@ -28,14 +28,7 @@ const Dashboard = () => {
         </div>
 
         <div style={styles.infoCard}>
-          <h3>🎉 Authentication Successful!</h3>
-          <p>You have successfully logged into your account. This is a protected area that only authenticated users can access.</p>
-          <ul style={styles.featureList}>
-            <li>✅ User registration and login</li>
-            <li>✅ JWT token authentication</li>
-            <li>✅ Protected routes</li>
-            <li>✅ Secure logout</li>
-          </ul>
+          <h1>Logged in Successfully!</h1>
         </div>
       </div>
     </div>
@@ -79,7 +72,7 @@ const styles = {
     padding: '2rem',
     borderRadius: '8px',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    marginBottom: '2rem'
+    marginBottom: '2rem',
   },
   welcomeTitle: {
     color: '#28a745',
