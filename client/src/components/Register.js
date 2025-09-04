@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-const Register = ({ switchToLogin }) => {
+const Register = ({ switchToLogin, goBack }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -18,6 +18,7 @@ const Register = ({ switchToLogin }) => {
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear error when user starts typing
     if (error) setError('');
   };
 
@@ -26,6 +27,7 @@ const Register = ({ switchToLogin }) => {
     setLoading(true);
     setError('');
 
+    // Client-side validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
@@ -49,6 +51,18 @@ const Register = ({ switchToLogin }) => {
     }
     
     setLoading(false);
+  };
+
+  const handleSwitchToLogin = () => {
+    if (switchToLogin) {
+      switchToLogin();
+    }
+  };
+
+  const handleGoBack = () => {
+    if (goBack) {
+      goBack();
+    }
   };
 
   return (
@@ -130,12 +144,23 @@ const Register = ({ switchToLogin }) => {
         <p style={styles.switchText}>
           Already have an account?{' '}
           <button 
-            onClick={switchToLogin}
+            onClick={handleSwitchToLogin}
             style={styles.linkButton}
           >
             Login here
           </button>
         </p>
+
+        {goBack && (
+          <p style={styles.switchText}>
+            <button 
+              onClick={handleGoBack}
+              style={styles.linkButton}
+            >
+              ← Back to Home
+            </button>
+          </p>
+        )}
       </div>
     </div>
   );

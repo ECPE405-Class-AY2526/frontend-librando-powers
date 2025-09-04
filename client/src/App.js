@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import Landing from './components/Landing';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import './App.css';
 
 const AuthFlow = () => {
-  const [showRegister, setShowRegister] = useState(false);
+  const [currentView, setCurrentView] = useState('landing'); // 'landing', 'login', 'register'
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
@@ -21,15 +22,36 @@ const AuthFlow = () => {
     return <Dashboard />;
   }
 
-  return (
-    <>
-      {showRegister ? (
-        <Register switchToLogin={() => setShowRegister(false)} />
-      ) : (
-        <Login switchToRegister={() => setShowRegister(true)} />
-      )}
-    </>
-  );
+  switch (currentView) {
+    case 'landing':
+      return (
+        <Landing 
+          onGetStarted={() => setCurrentView('register')}
+          onSignIn={() => setCurrentView('login')}
+        />
+      );
+    case 'login':
+      return (
+        <Login 
+          switchToRegister={() => setCurrentView('register')}
+          backToLanding={() => setCurrentView('landing')}
+        />
+      );
+    case 'register':
+      return (
+        <Register 
+          switchToLogin={() => setCurrentView('login')}
+          backToLanding={() => setCurrentView('landing')}
+        />
+      );
+    default:
+      return (
+        <Landing 
+          onGetStarted={() => setCurrentView('register')}
+          onSignIn={() => setCurrentView('login')}
+        />
+      );
+  }
 };
 
 function App() {

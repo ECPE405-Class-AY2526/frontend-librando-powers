@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-const Login = ({ switchToRegister }) => {
+const Login = ({ switchToRegister, goBack }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -16,6 +16,7 @@ const Login = ({ switchToRegister }) => {
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear error when user starts typing
     if (error) setError('');
   };
 
@@ -31,6 +32,18 @@ const Login = ({ switchToRegister }) => {
     }
     
     setLoading(false);
+  };
+
+  const handleSwitchToRegister = () => {
+    if (switchToRegister) {
+      switchToRegister();
+    }
+  };
+
+  const handleGoBack = () => {
+    if (goBack) {
+      goBack();
+    }
   };
 
   return (
@@ -86,12 +99,23 @@ const Login = ({ switchToRegister }) => {
         <p style={styles.switchText}>
           Don't have an account?{' '}
           <button 
-            onClick={switchToRegister}
+            onClick={handleSwitchToRegister}
             style={styles.linkButton}
           >
             Register here
           </button>
         </p>
+
+        {goBack && (
+          <p style={styles.switchText}>
+            <button 
+              onClick={handleGoBack}
+              style={styles.linkButton}
+            >
+              ← Back to Home
+            </button>
+          </p>
+        )}
       </div>
     </div>
   );
